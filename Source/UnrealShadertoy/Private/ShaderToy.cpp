@@ -82,11 +82,14 @@ UShaderToy::UShaderToy(const FObjectInitializer& ObjectInitializer)
 #if WITH_EDITOR
 
 //在这里查看私有变量的位移
-// #include <Runtime/Engine/Private/Materials/HLSLMaterialTranslator.h>
-// constexpr int offset = offsetof(FHLSLMaterialTranslator, CurrentCustomVertexInterpolatorOffset);
+#include <Runtime/Engine/Private/Materials/HLSLMaterialTranslator.h>
+//constexpr int offset = offsetof(FHLSLMaterialTranslator, MaterialCompilationOutput);
+//constexpr int offset = offsetof(FUniformExpressionSet, Uniform2DTextureExpressions);
 
 struct FHLSLMaterialTranslatorReader
 {
+	int a;
+
 	template<typename T>
 	static T& GetCompilerMemberByOffset(const class FMaterialCompiler* Compiler, int32 Offset)
 	{
@@ -105,7 +108,8 @@ struct FHLSLMaterialTranslatorReader
 
  	static FMaterialCompilationOutput& MaterialCompilationOutput(const class FMaterialCompiler* Compiler)
  	{
- 		return GetCompilerMemberByOffset<FMaterialCompilationOutput&>(Compiler, 192);
+		//获取这个地址偏移的办法只能Debug看Compiler的地址和这边的地址的相对位置，然后做运算
+ 		return GetCompilerMemberByOffset<FMaterialCompilationOutput>(Compiler, 192 - 520);
  	}
 
 	//FUniformExpressionSet
@@ -117,47 +121,47 @@ struct FHLSLMaterialTranslatorReader
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& PerFramePrevUniformScalarExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 128);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 128);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& PerFrameUniformScalarExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 96);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 96);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& UniformScalarExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 32);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 32);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& PerFramePrevUniformVectorExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 144);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 144);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& PerFrameUniformVectorExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 112);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 112);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& UniformVectorExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 16);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 16);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& Uniform2DTextureExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 48);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 48);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& UniformCubeTextureExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 64);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 64);
 	}
 
 	static TArray<TRefCountPtr<FMaterialUniformExpression>>& UniformExternalTextureExpressions(FUniformExpressionSet& UniformExpressionSet)
 	{
-		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>&>(UniformExpressionSet, 80);
+		return GetExpressionSetMemberByOffset<TArray<TRefCountPtr<FMaterialUniformExpression>>>(UniformExpressionSet, 80);
 	}
 	//
 
@@ -200,7 +204,7 @@ struct FHLSLMaterialTranslatorReader
 
 	static TArray<FShaderCodeChunk>*& CurrentScopeChunks(const class FMaterialCompiler* Compiler)
 	{
-		return GetCompilerMemberByOffset<TArray<FShaderCodeChunk>*>(Compiler, 48);
+		return GetCompilerMemberByOffset<TArray<FShaderCodeChunk>*&>(Compiler, 48);
 	}
 
 	static int32& NextSymbolIndex(const class FMaterialCompiler* Compiler)
@@ -210,7 +214,7 @@ struct FHLSLMaterialTranslatorReader
 
 	static int32 AccessUniformExpression(class FMaterialCompiler* Compiler, int32 Index)
 	{
-		//没法拿到位域的偏移，一直将预览打开吧。。
+		//没法拿到位域的偏移
 		bool bCompilingPreviousFrame = true;
 
 		check(Index >= 0 && Index < CurrentScopeChunks(Compiler)->Num());
@@ -289,9 +293,11 @@ struct FHLSLMaterialTranslatorReader
 			switch (CodeChunk.Type)
 			{
 			case MCT_Texture2D:
+			{
 				TextureInputIndex = Uniform2DTextureExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(TextureUniformExpression);
 				BaseName = TEXT("Texture2D");
 				break;
+			}
 			case MCT_TextureCube:
 				TextureInputIndex = UniformCubeTextureExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(TextureUniformExpression);
 				BaseName = TEXT("TextureCube");
@@ -422,7 +428,7 @@ struct FHLSLMaterialTranslatorReader
 		{
 			const int32 CodeIndex = CurrentScopeChunks(Compiler)->Num();
 			// Adding an inline code chunk, the definition will be the code to inline
-			new(*CurrentScopeChunks) FShaderCodeChunk(FormattedCode, TEXT(""), Type, true);
+			new(*CurrentScopeChunks(Compiler)) FShaderCodeChunk(FormattedCode, TEXT(""), Type, true);
 			return CodeIndex;
 		}
 		// Can only create temporaries for float and material attribute types.
