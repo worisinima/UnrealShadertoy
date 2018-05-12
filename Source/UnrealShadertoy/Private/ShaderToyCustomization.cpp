@@ -82,10 +82,23 @@ void ShaderToyHLSLFunctionCustomization::CustomizeChildren(TSharedRef<class IPro
 			MultiLineEditableTextBox->InsertTextAtCursor(TEXT("\t"));
 			return FReply::Handled();
 		}
-		else
+		return FReply::Unhandled();
+	}));
+
+	//简单括号补全
+	MultiLineEditableTextBox->SetOnKeyCharHandler(FOnKeyChar::CreateLambda([=](const FGeometry& Geometry, const FCharacterEvent& CharacterEvent)
+	{
+		if (CharacterEvent.GetCharacter() == TEXT('('))
 		{
-			return FReply::Unhandled();
+			MultiLineEditableTextBox->InsertTextAtCursor(TEXT("()"));
+			return FReply::Handled();
 		}
+		if (CharacterEvent.GetCharacter() == TEXT('{'))
+		{
+			MultiLineEditableTextBox->InsertTextAtCursor(TEXT("{}"));
+			return FReply::Handled();
+		}
+		return FReply::Unhandled();
 	}));
 
 	StructBuilder.AddCustomRow(LOCTEXT("FunctionCodes", "FunctionCodes")).NameContent()
