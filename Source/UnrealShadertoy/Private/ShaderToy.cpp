@@ -88,8 +88,6 @@ UShaderToy::UShaderToy(const FObjectInitializer& ObjectInitializer)
 
 struct FHLSLMaterialTranslatorReader
 {
-	int a;
-
 	template<typename T>
 	static T& GetCompilerMemberByOffset(const class FMaterialCompiler* Compiler, int32 Offset)
 	{
