@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "NodeName"))
 	FString NodeTitle;
 
+	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "DefineBody"))
+	FString DefineBody;
+
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "Inputs"))
 	TArray<struct FCustomInput> Inputs;
 

@@ -82,7 +82,7 @@ UShaderToy::UShaderToy(const FObjectInitializer& ObjectInitializer)
 #if WITH_EDITOR
 
 //在这里查看私有变量的位移
-#include <Runtime/Engine/Private/Materials/HLSLMaterialTranslator.h>
+//#include <Runtime/Engine/Private/Materials/HLSLMaterialTranslator.h>
 //constexpr int offset = offsetof(FHLSLMaterialTranslator, MaterialCompilationOutput);
 //constexpr int offset = offsetof(FUniformExpressionSet, Uniform2DTextureExpressions);
 
@@ -463,7 +463,7 @@ struct FHLSLMaterialTranslatorReader
 	}
 };
 
-int32 ShaderToy(class FMaterialCompiler* Compiler, class UShaderToy* Custom, TArray<int32>& CompiledInputs)
+int32 ShaderToy(class FMaterialCompiler* Compiler, class UShaderToy* Custom, TArray<int32>& CompiledInputs, FString DefineBody)
 {
 	int32 ResultIdx = INDEX_NONE;
 
@@ -543,6 +543,10 @@ int32 ShaderToy(class FMaterialCompiler* Compiler, class UShaderToy* Custom, TAr
 	TArray<FString>& CustomExpressionImplementations = FHLSLMaterialTranslatorReader::CustomExpressionImplementations(Compiler);
  	int32 CustomExpressionIndex = CustomExpressionImplementations.Num();
  
+	//宏声明
+	FString DefineDesc = DefineBody + TEXT("\r\n");
+	CustomExpressionImplementations.Add(DefineDesc);
+
  	//------------------------先把需要调用的函数加上去-----------------------------------------
  	for (int32 i = 0; i < Custom->HLSLFunctions.Num(); i++)
  	{
@@ -630,7 +634,7 @@ int32 UShaderToy::Compile(class FMaterialCompiler* Compiler, int32 OutputIndex)
 		}
 	}
 
-	return ShaderToy(Compiler, this, CompiledInputs);
+	return ShaderToy(Compiler, this, CompiledInputs, DefineBody);
 }
 
 void UShaderToy::GetCaption(TArray<FString>& OutCaptions) const
