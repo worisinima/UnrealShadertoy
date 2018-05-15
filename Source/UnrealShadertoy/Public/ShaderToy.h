@@ -10,6 +10,29 @@
 #include "ShaderToy.generated.h"
 
 USTRUCT()
+struct FCodeableString
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, Category = "CodeableString")
+	FString Code;
+
+	FCodeableString() = default;
+	FCodeableString(const FString& Code)
+		:Code(Code)
+	{}
+	template <
+		typename CharType,
+		typename = typename TEnableIf<TIsCharType<CharType>::Value>::Type
+	>
+	FORCEINLINE FCodeableString(const CharType* Src)
+		:Code(Src)
+	{}
+
+	operator FString() const { return Code; }
+};
+
+USTRUCT()
 struct FShaderToyHLSLFunction
 {
 	GENERATED_USTRUCT_BODY()
@@ -18,7 +41,7 @@ struct FShaderToyHLSLFunction
 	FString FunctionName;
 
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "FuncBody"))
-	FString FunctionCodes;
+	FCodeableString FunctionCodes;
 };
 
 /**
@@ -34,7 +57,7 @@ public:
 	FString NodeTitle;
 
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "DefineBody"))
-	FString DefineBody;
+	FCodeableString DefineBody;
 
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "Inputs"))
 	TArray<struct FCustomInput> Inputs;

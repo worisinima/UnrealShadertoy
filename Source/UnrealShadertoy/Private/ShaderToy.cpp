@@ -64,6 +64,7 @@ UShaderToy::UShaderToy(const FObjectInitializer& ObjectInitializer)
 	static FConstructorStatics ConstructorStatics;
 
 	MainFunction.FunctionName = TEXT("main");
+	MainFunction.FunctionCodes = TEXT("return float3(1,1,1);");
 
 	NodeTitle = TEXT("UnrealShaderToy");
 
@@ -732,7 +733,7 @@ void UShaderToy::Serialize(FArchive& Ar)
 	if (Ar.UE4Ver() < VER_UE4_INSTANCED_STEREO_UNIFORM_UPDATE)
 	{
 		// Look for WorldPosition rename
-		if (MainFunction.FunctionCodes.ReplaceInline(TEXT("Parameters.WorldPosition"), TEXT("Parameters.AbsoluteWorldPosition"), ESearchCase::CaseSensitive) > 0)
+		if (MainFunction.FunctionCodes.Code.ReplaceInline(TEXT("Parameters.WorldPosition"), TEXT("Parameters.AbsoluteWorldPosition"), ESearchCase::CaseSensitive) > 0)
 		{
 			bDidUpdate = true;
 		}
@@ -823,7 +824,7 @@ void UShaderToy::Serialize(FArchive& Ar)
 		{
 			const FString SearchString = FrameUniformName + Member;
 			const FString ReplaceString = ViewUniformName + Member;
-			if (MainFunction.FunctionCodes.ReplaceInline(*SearchString, *ReplaceString, ESearchCase::CaseSensitive) > 0)
+			if (MainFunction.FunctionCodes.Code.ReplaceInline(*SearchString, *ReplaceString, ESearchCase::CaseSensitive) > 0)
 			{
 				bDidUpdate = true;
 			}
@@ -832,7 +833,7 @@ void UShaderToy::Serialize(FArchive& Ar)
 
 	if (Ar.CustomVer(FRenderingObjectVersion::GUID) < FRenderingObjectVersion::RemovedRenderTargetSize)
 	{
-		if (MainFunction.FunctionCodes.ReplaceInline(TEXT("View.RenderTargetSize"), TEXT("View.BufferSizeAndInvSize.xy"), ESearchCase::CaseSensitive) > 0)
+		if (MainFunction.FunctionCodes.Code.ReplaceInline(TEXT("View.RenderTargetSize"), TEXT("View.BufferSizeAndInvSize.xy"), ESearchCase::CaseSensitive) > 0)
 		{
 			bDidUpdate = true;
 		}

@@ -10,8 +10,9 @@ void FUnrealShadertoyModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyModule.RegisterCustomClassLayout("ShaderToy", FOnGetDetailCustomizationInstance::CreateStatic(&ShaderToyCustomization::MakeInstance));
-	PropertyModule.RegisterCustomPropertyTypeLayout("ShaderToyHLSLFunction", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&ShaderToyHLSLFunctionCustomization::MakeInstance));
+	PropertyModule.RegisterCustomPropertyTypeLayout("CodeableString", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FCodeableStringCustomization::MakeInstance));
+	PropertyModule.RegisterCustomClassLayout("ShaderToy", FOnGetDetailCustomizationInstance::CreateStatic(&FShaderToyCustomization::MakeInstance));
+	PropertyModule.RegisterCustomPropertyTypeLayout("ShaderToyHLSLFunction", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FShaderToyHLSLFunctionCustomization::MakeInstance));
 }
 
 void FUnrealShadertoyModule::ShutdownModule()
