@@ -232,26 +232,10 @@ struct FHLSLMaterialTranslatorReader
 		TCHAR FormattedCode[MAX_SPRINTF] = TEXT("");
 		if (CodeChunk.Type == MCT_Float)
 		{
-			if (CodeChunk.UniformExpression->IsChangingPerFrame())
-			{
-				if (bCompilingPreviousFrame)
-				{
-					const int32 ScalarInputIndex = PerFramePrevUniformScalarExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-					FCString::Sprintf(FormattedCode, TEXT("UE_Material_PerFramePrevScalarExpression%u"), ScalarInputIndex);
-				}
-				else
-				{
-					const int32 ScalarInputIndex = PerFrameUniformScalarExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-					FCString::Sprintf(FormattedCode, TEXT("UE_Material_PerFrameScalarExpression%u"), ScalarInputIndex);
-				}
-			}
-			else
-			{
-				const static TCHAR IndexToMask[] = { 'x', 'y', 'z', 'w' };
-				const int32 ScalarInputIndex = UniformScalarExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-				// Update the above FMemory::Malloc if this FCString::Sprintf grows in size, e.g. %s, ...
-				FCString::Sprintf(FormattedCode, TEXT("Material.ScalarExpressions[%u].%c"), ScalarInputIndex / 4, IndexToMask[ScalarInputIndex % 4]);
-			}
+			const static TCHAR IndexToMask[] = { 'x', 'y', 'z', 'w' };
+			const int32 ScalarInputIndex = UniformScalarExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
+			// Update the above FMemory::Malloc if this FCString::Sprintf grows in size, e.g. %s, ...
+			FCString::Sprintf(FormattedCode, TEXT("Material.ScalarExpressions[%u].%c"), ScalarInputIndex / 4, IndexToMask[ScalarInputIndex % 4]);
 		}
 		else if (CodeChunk.Type & MCT_Float)
 		{
@@ -265,28 +249,11 @@ struct FHLSLMaterialTranslatorReader
 			default: Mask = TEXT(""); break;
 			};
 
-			if (CodeChunk.UniformExpression->IsChangingPerFrame())
-			{
-				if (bCompilingPreviousFrame)
-				{
-					const int32 VectorInputIndex = PerFramePrevUniformVectorExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-					FCString::Sprintf(FormattedCode, TEXT("UE_Material_PerFramePrevVectorExpression%u%s"), VectorInputIndex, Mask);
-				}
-				else
-				{
-					const int32 VectorInputIndex = PerFrameUniformVectorExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-					FCString::Sprintf(FormattedCode, TEXT("UE_Material_PerFrameVectorExpression%u%s"), VectorInputIndex, Mask);
-				}
-			}
-			else
-			{
-				const int32 VectorInputIndex = UniformVectorExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
-				FCString::Sprintf(FormattedCode, TEXT("Material.VectorExpressions[%u]%s"), VectorInputIndex, Mask);
-			}
+			const int32 VectorInputIndex = UniformVectorExpressions(MaterialCompilationOutput(Compiler).UniformExpressionSet).AddUnique(CodeChunk.UniformExpression);
+			FCString::Sprintf(FormattedCode, TEXT("Material.VectorExpressions[%u]%s"), VectorInputIndex, Mask);
 		}
 		else if (CodeChunk.Type & MCT_Texture)
 		{
-			check(!CodeChunk.UniformExpression->IsChangingPerFrame());
 			int32 TextureInputIndex = INDEX_NONE;
 			const TCHAR* BaseName = TEXT("");
 			switch (CodeChunk.Type)
