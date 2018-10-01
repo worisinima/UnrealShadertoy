@@ -37,7 +37,7 @@ struct FShaderToyHLSLFunction
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "FuncDecs"))
+	UPROPERTY(VisibleDefaultsOnly, Category = MaterialExpressionCustom, meta = (DisplayName = "FuncDecs"))
 	FString FunctionName;
 
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "FuncBody"))
@@ -68,8 +68,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "MainFunction"))
 	FShaderToyHLSLFunction MainFunction;
 
-	UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "ChildFunctions"))
-	TArray<FShaderToyHLSLFunction> HLSLFunctions;
+	//UPROPERTY(EditAnywhere, Category = MaterialExpressionCustom, meta = (DisplayName = "ChildFunctions"))
+	//TArray<FShaderToyHLSLFunction> HLSLFunctions;
 
 	//~ Begin UObject Interface.
 #if WITH_EDITOR

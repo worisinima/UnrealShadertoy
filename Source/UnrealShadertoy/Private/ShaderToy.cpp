@@ -516,21 +516,21 @@ int32 ShaderToy(class FMaterialCompiler* Compiler, class UShaderToy* Custom, TAr
 	CustomExpressionImplementations.Add(DefineDesc);
 
  	//------------------------先把需要调用的函数加上去-----------------------------------------
- 	for (int32 i = 0; i < Custom->HLSLFunctions.Num(); i++)
- 	{
- 		FString Code = Custom->HLSLFunctions[i].FunctionCodes;
- 		FString FunctionName = Custom->HLSLFunctions[i].FunctionName;
- 		if (!Code.Contains(TEXT("return")))
- 		{
- 			Code = FString(TEXT("return ")) + Code + TEXT(";");
- 		}
- 		Code.ReplaceInline(TEXT("\n"), TEXT("\r\n"), ESearchCase::CaseSensitive);
-		
+	/*for (int32 i = 0; i < Custom->HLSLFunctions.Num(); i++)
+	{
+		FString Code = Custom->HLSLFunctions[i].FunctionCodes;
+		FString FunctionName = Custom->HLSLFunctions[i].FunctionName;
+		if (!Code.Contains(TEXT("return")))
+		{
+			Code = FString(TEXT("return ")) + Code + TEXT(";");
+		}
+		Code.ReplaceInline(TEXT("\n"), TEXT("\r\n"), ESearchCase::CaseSensitive);
+
 		EShaderFrequency& ShaderFrequency = FHLSLMaterialTranslatorReader::ShaderFrequency(Compiler);
- 		FString ParametersType = ShaderFrequency == SF_Vertex ? TEXT("Vertex") : (ShaderFrequency == SF_Domain ? TEXT("Tessellation") : TEXT("Pixel"));
- 		FString ImplementationCode = FString::Printf(TEXT("%s\r\n{\r\n%s\r\n}\r\n"), *FunctionName, *Code);
- 		CustomExpressionImplementations.Add(ImplementationCode);
- 	}
+		FString ParametersType = ShaderFrequency == SF_Vertex ? TEXT("Vertex") : (ShaderFrequency == SF_Domain ? TEXT("Tessellation") : TEXT("Pixel"));
+		FString ImplementationCode = FString::Printf(TEXT("%s\r\n{\r\n%s\r\n}\r\n"), *FunctionName, *Code);
+		CustomExpressionImplementations.Add(ImplementationCode);
+	}*/
  	FString Code = Custom->MainFunction.FunctionCodes;
  	if (!Code.Contains(TEXT("return")))
  	{
