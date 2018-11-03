@@ -105,10 +105,12 @@ struct FHLSLMaterialTranslatorReader
 		return GetCompilerMemberByOffset<TArray<FString>>(Compiler, 1448);
 	}
 
- 	static FMaterialCompilationOutput& MaterialCompilationOutput(const class FMaterialCompiler* Compiler)
+	static FMaterialCompilationOutput& MaterialCompilationOutput(const class FMaterialCompiler* Compiler)
  	{
 		//获取这个地址偏移的办法只能Debug看Compiler的地址和这边的地址的相对位置，然后做运算
- 		return GetCompilerMemberByOffset<FMaterialCompilationOutput>(Compiler, 192 - 520);
+		//将这个拷贝到监视窗口去取值
+		//-((char*)Compiler - ((char*)(&(*((UE4Editor-Engine.dll!FHLSLMaterialTranslator*)Compiler)).MaterialCompilationOutput)))
+ 		return GetCompilerMemberByOffset<FMaterialCompilationOutput>(Compiler, -288);
  	}
 
 	//FUniformExpressionSet
